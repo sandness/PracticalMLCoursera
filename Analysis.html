@@ -1,1 +1,34 @@
-Initial commit
+<p>I began by dividing pml-training.csv data into training and cross-validation sets.  80% (15699 samples) went into the training set, and 20% (3923 samples) went into the cross-validation set.</p>
+
+<p>Next, I removed all columns in the training set which contained any NA or empty string ("") values.  On inspection of the data set, it was clear that all such columns were very sparsely populated, and unlikely to contribute to a successful prediction model.  As it turned out, this step was critical, as all training methods failed to work properly if the training set contained these columns.</p>
+
+<p>I also removed the first 5 columns in the training set, as these appeared to be row metadata (row identifiers and timestamps).  Given that the "classe" values were ordered, this avoided the possibility that a classifier would learn to predict the "classe" value based on the row ID number.</p>
+
+<p>I then trained three classification models on the training set.  The first used a random forest (train function with "rf" method), the second used boosting (train function with the "gbm" method), and the third used a support vector machine (svm function).</p>
+
+<p>I predicted the "classe" value for each sample in both the training and cross-validation sets, using each of these three models.  The models produced the following classification accuracies on the training and cross-validation sets.</p>
+
+<table border="1">
+<tr>
+  <th>Model</th>
+  <th>Train</th>
+  <th>CV</th>
+</tr>
+<tr>
+  <td>RF</td>
+  <td>1</td>
+  <td>0.998</td>
+</tr>
+<tr>
+  <td>GBM</td>
+  <td>0.9925</td>
+  <td>0.9983</td>
+</tr>
+<tr>
+  <td>SVM</td>
+  <td>0.9558</td>
+  <td>0.9488</td>
+</tr>
+</table>
+
+<p>Given that the random forest model had perfect accuracy on the training set, I knew there was no possibility of getting further accuracy gains by stacking the three models together--any stacked model would simply learn to always take the value predicted by the RF classifier.  Nonetheless, as a check, I applied both the RF and GBM models to the test set of 20 samples.  As expected, both models produced the same set of results.</p>
